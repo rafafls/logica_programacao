@@ -1,2 +1,2 @@
-# logica_programacao
-
+# logica_programação
+Estudos basicos sobre HTML CSS.
