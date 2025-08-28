@@ -1,21 +1,11 @@
+@import url("cores.css");
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
 }
-
-:root {
-    --cor-cabecalho-inicial: #8b0101 ;
-    --cor-cabecalho-final: #ac0303 ;
-    --cor-fundo-body: #f5f5f5 ;
-    --cor-main: #fff;
-    --cor-letras-link: #fff;
-    --cor-rodade: #333;
-    --cor-botao-cabecalho: #ffffff49;
-    --cor-rodade: #333;
-}
-
 
 header {
     background-image: linear-gradient(to bottom, var(--cor-cabecalho-inicial), var(--cor-cabecalho-final));
