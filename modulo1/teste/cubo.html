@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cubo 3D Personalizável</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0b1e3a;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+      flex-direction: column;
+    }
+
+    .scene {
+      perspective: 1000px;
+      margin-bottom: 20px;
+    }
+
+    .cube {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      cursor: grab;
+      transition: transform 0.1s;
+    }
+
+    .face {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+      background: white;
+      opacity: 0.95;
+    }
+
+    .front  { transform: translateZ(100px); }
+    .back   { transform: rotateY(180deg) translateZ(100px); }
+    .right  { transform: rotateY(90deg) translateZ(100px); }
+    .left   { transform: rotateY(-90deg) translateZ(100px); }
+    .top    { transform: rotateX(90deg) translateZ(100px); }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: #34495e;
+      color: white;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #5d6d7e;
+    }
+
+    .color-picker-container {
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .color-picker-container label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene">
+    <div class="cube" id="cube">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+    </div>
+  </div>
+
+  <button id="btnMostrarCores">Mudar Cor</button>
+
+  <div class="color-picker-container" id="colorPickers">
+    <label>Front: <input type="color" data-face="front" value="#ffffff"></label>
+    <label>Back: <input type="color" data-face="back" value="#ffffff"></label>
+    <label>Right: <input type="color" data-face="right" value="#ffffff"></label>
+    <label>Left: <input type="color" data-face="left" value="#ffffff"></label>
+    <label>Top: <input type="color" data-face="top" value="#ffffff"></label>
+    <label>Bottom: <input type="color" data-face="bottom" value="#ffffff"></label>
+  </div>
+
+  <script>
+    const cube = document.getElementById('cube');
+    let isDragging = false;
+    let previousX, previousY;
+    let rotationX = -20;
+    let rotationY = -20;
+    cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+
+    cube.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      previousX = e.clientX;
+      previousY = e.clientY;
+      cube.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      cube.style.cursor = 'grab';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - previousX;
+      const deltaY = e.clientY - previousY;
+      rotationY += deltaX * 0.5;
+      rotationX -= deltaY * 0.5;
+      previousX = e.clientX;
+      previousY = e.clientY;
+      cube.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    });
+
+    // Mostrar/ocultar color pickers
+    const btnMostrarCores = document.getElementById('btnMostrarCores');
+    const colorPickers = document.getElementById('colorPickers');
+    btnMostrarCores.addEventListener('click', () => {
+      colorPickers.style.display = colorPickers.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Mudar cor das faces
+    const inputs = document.querySelectorAll('.color-picker-container input');
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        const face = input.dataset.face;
+        const color = input.value;
+        document.querySelector(`.face.${face}`).style.background = color;
+      });
+    });
+  </script>
+
+</body>
+</html>
