@@ -1,0 +1,42 @@
+main {
+    width: 50vw;
+    margin: auto;
+
+}
+
+h1 {
+    text-align: center;
+}
+
+#titulo1 {
+    color: rgb(106, 0, 255);
+    background-color: gold;
+}
+
+.texto-titulo1 {
+    color: rgb(251, 5, 5);
+    background-color: rgb(20, 99, 99);
+
+}
+
+#titulo2 {
+    color: rgb(255, 0, 0);
+    background-color: cyan;
+}
+
+.texto-titulo2 {
+    color: rgb(235, 235, 42);
+    background-color: rgb(15, 34, 141);
+
+}
+
+#titulo3 {
+    color: gold;
+    background-color: rgb(106, 0, 255);
+}
+
+.texto-titulo3 {
+    color: rgb(182, 246, 246);
+    background-color: rgb(20, 99, 99);
+
+}
