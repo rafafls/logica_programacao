@@ -1,0 +1,76 @@
+@import url(cores.css);
+
+body {
+    background-color: var(--cor-fundo-body);
+    
+}
+
+.receita-detalhe {
+    max-width: 40vw;
+    margin: 30px auto;
+    border: 1px solid rgba(0, 0, 0, 0.114);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.154);
+    background-color: var(--cor-main);
+}
+
+.receita-detalhe  h2 {
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.img-receita {
+    display: block;
+    width: 90%;
+    margin: 10px auto;
+    border-radius: 12px;
+    height: auto;
+}
+
+.receita-detalhe h3 {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: var(--cor-titulo-h3);
+}
+
+.receita-detalhe ul, .receita-detalhe ol {
+    margin-left: 40px;
+    line-height: 1.6;
+}
+
+
+footer {
+    position: fixed;
+    width: 100%;
+}
+
+.img-icon-github > img {
+    width: 25px;      
+    height: auto;     
+    transition: transform 0.3s; 
+}
+
+.img-icon-github > img:hover {
+    transform: scale(1.1); 
+    cursor: pointer;        
+}
+
+.img-icon-linkedin > img {
+    width: 25px;      
+    height: auto;     
+    transition: transform 0.3s; 
+}
+
+.img-icon-linkedin > img:hover {
+    transform: scale(1.1); 
+    cursor: pointer;        
+}
+
+
+
+
+
+
+
