@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cubo 3D Interativo — Arraste para girar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1: linear-gradient(135deg,#071226 0%, #041024 100%);
+      --panel: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.04);
+      --cube-color: #7c3aed;
+      --glass-border: rgba(255,255,255,0.06);
+      --size: 220px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{
+      display:flex;align-items:center;justify-content:center;
+      background:var(--bg-1);
+      color:whitesmoke;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:2rem;
+    }
+
+    .stage{
+      width:min(92vw,960px);
+      height:min(78vh,680px);
+      display:grid;place-items:center;
+      perspective:1200px;
+      position:relative;
+      gap:1rem;
+    }
+
+    .controls{
+      position:absolute;left:1rem;top:1rem;z-index:40;
+      display:flex;gap:0.5rem;align-items:center;
+      background:var(--panel);
+      padding:0.5rem 0.6rem;border-radius:12px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+      backdrop-filter: blur(8px) saturate(120%);
+      border:1px solid var(--glass-border);
+    }
+
+    .btn{
+      display:inline-flex;align-items:center;gap:0.5rem;padding:0.45rem 0.6rem;border-radius:10px;
+      background:transparent;color:var(--cube-color);border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer;font-weight:600;font-size:0.9rem;transition:all .18s ease;
+    }
+    .btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(2,6,23,0.6)}
+
+    .color-indicator{
+      width:18px;height:18px;border-radius:6px;border:1px solid rgba(255,255,255,0.12);background:var(--cube-color);
+    }
+
+    .info{font-size:0.78rem;color:rgba(255,255,255,0.9);opacity:0.95;margin-left:0.6rem}
+
+    .wrap{
+      width:var(--size);height:var(--size);display:grid;place-items:center;
+      transform-style:preserve-3d;z-index:20;cursor:grab;
+    }
+    .wrap:active{cursor:grabbing}
+
+    .scene{
+      width:var(--size);height:var(--size);position:relative;transform-style:preserve-3d;display:block;
+    }
+
+    .cube{
+      width:var(--size);height:var(--size);position:absolute;left:50%;top:50%;transform-style:preserve-3d;
+      transform-origin:center center;
+      transform:translate(-50%,-50%) rotateX(0deg) rotateY(0deg);
+      will-change:transform;
+    }
+
+    .face{
+      position:absolute;width:var(--size);height:var(--size);display:flex;align-items:center;justify-content:center;
+      background:var(--cube-color);
+      border:2px solid rgba(0,0,0,0.6);
+      box-shadow:inset 0 -8px 20px rgba(0,0,0,0.25);
+      -webkit-backface-visibility:hidden;backface-visibility:hidden;
+    }
+
+    .face.front  { transform: translateZ(calc(var(--size) / 2)); }
+    .face.back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); }
+    .face.right  { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); }
+    .face.left   { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); }
+    .face.top    { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); }
+    .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); }
+
+    .panel{
+      position:absolute;right:1rem;bottom:1rem;padding:0.6rem 0.9rem;border-radius:12px;background:var(--glass);
+      font-size:0.9rem;border:1px solid var(--glass-border);backdrop-filter: blur(8px);
+      box-shadow:0 8px 24px rgba(0,0,0,0.45);
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="Cubo 3D interativo">
+    <div class="controls" role="region" aria-label="Controles do cubo">
+      <button class="btn" id="colorBtn" title="Mudar cor">
+        Mudar cor
+      </button>
+      <div class="color-indicator" id="colorIndicator" aria-hidden></div>
+      <div class="info" id="hexLabel">#7c3aed</div>
+      <input id="colorPicker" type="color" value="#7c3aed" style="display:none" aria-hidden="true">
+    </div>
+
+    <div class="wrap" id="wrap">
+      <div class="scene">
+        <div class="cube" id="cube">
+          <div class="face front"></div>
+          <div class="face back"></div>
+          <div class="face right"></div>
+          <div class="face left"></div>
+          <div class="face top"></div>
+          <div class="face bottom"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">Arraste com o mouse / toque para girar • Role para zoom</div>
+  </main>
+
+  <script>
+    const colorBtn = document.getElementById('colorBtn');
+    const colorPicker = document.getElementById('colorPicker');
+    const colorIndicator = document.getElementById('colorIndicator');
+    const hexLabel = document.getElementById('hexLabel');
+    const cube = document.getElementById('cube');
+
+    colorBtn.addEventListener('click', ()=> colorPicker.click());
+    colorPicker.addEventListener('input', (e)=>{
+      const v = e.target.value;
+      document.documentElement.style.setProperty('--cube-color', v);
+      colorIndicator.style.background = v;
+      colorBtn.style.color = v;
+      hexLabel.textContent = v.toLowerCase();
+    });
+
+    let isDown = false; let startX=0, startY=0; let rotX=0, rotY=0; let currentScale=1;
+    let velX=0, velY=0; let animating=false;
+
+    function applyTransform(){
+      cube.style.transform = `translate(-50%,-50%) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${currentScale})`;
+    }
+
+    function animate(){
+      if(!animating) return;
+      rotX += velX;
+      rotY += velY;
+      velX *= 0.95;
+      velY *= 0.95;
+      if(Math.abs(velX) < 0.001 && Math.abs(velY) < 0.001){
+        animating=false;
+        return;
+      }
+      applyTransform();
+      requestAnimationFrame(animate);
+    }
+
+    const wrap = document.getElementById('wrap');
+
+    wrap.addEventListener('pointerdown', (e)=>{
+      isDown = true; startX = e.clientX; startY = e.clientY; animating=false;
+    });
+
+    window.addEventListener('pointermove', (e)=>{
+      if(!isDown) return;
+      const dx = e.clientX - startX; const dy = e.clientY - startY;
+      rotY += dx * 0.4; rotX -= dy * 0.4;
+      velY = dx * 0.01; velX = -dy * 0.01;
+      startX = e.clientX; startY = e.clientY;
+      applyTransform();
+    });
+
+    window.addEventListener('pointerup', ()=>{
+      isDown=false;
+      if(Math.abs(velX) > 0.01 || Math.abs(velY) > 0.01){
+        animating=true;
+        requestAnimationFrame(animate);
+      }
+    });
+
+    wrap.addEventListener('wheel', (e)=>{
+      e.preventDefault();
+      const delta = -e.deltaY;
+      currentScale += (delta > 0) ? 0.05 : -0.05;
+      currentScale = Math.max(0.5, Math.min(2, currentScale));
+      applyTransform();
+    }, {passive:false});
+
+    applyTransform();
+
+    window.addEventListener('load', ()=>{
+      colorIndicator.style.background = getComputedStyle(document.documentElement).getPropertyValue('--cube-color').trim();
+    });
+  </script>
+</body>
+</html>
