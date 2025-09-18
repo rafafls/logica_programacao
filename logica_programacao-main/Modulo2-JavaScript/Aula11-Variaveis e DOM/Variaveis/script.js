@@ -12,6 +12,6 @@ console.log(nome)
 let sobrenome = "Souza"
 sobrenome = "Silva"
 
-
 //Constante
 const pi = 3.14
+
