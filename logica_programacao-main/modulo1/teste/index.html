@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site de Momentos</title>
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+    /* Tela inicial */
+    .inicio {
+      background: linear-gradient(135deg, #121212, #1db954);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      background: #1e90ff;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 15px #1e90ff, 0 0 30px #1e90ff;
+      transition: transform 0.2s;
+    }
+    .btn:hover { transform: scale(1.1); box-shadow: 0 0 25px #1e90ff, 0 0 50px #1e90ff; }
+
+    /* Tela de momentos */
+    .momentos {
+      background: #121212;
+      color: white;
+      padding: 80px 20px 20px;
+    }
+
+    /* Header fixo com menu */
+    .topo-fixo {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      background: #181818;
+      padding: 15px;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    .topo-fixo h1 { margin-bottom: 10px; color: #1db954; }
+    .topo-fixo nav a {
+      margin: 0 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .topo-fixo nav a:hover { color: #1db954; }
+
+    section { margin-bottom: 40px; }
+    section h2 { margin: 10px 0 15px 10px; font-size: 1.4rem; color: #fff; }
+
+    /* Carrossel */
+    .carrossel-container { position: relative; }
+    .carrossel {
+      display: flex; gap: 20px;
+      overflow-x: auto; scroll-behavior: smooth;
+      padding-bottom: 15px;
+      scrollbar-width: none;
+    }
+    .carrossel::-webkit-scrollbar { display: none; }
+    .card {
+      flex: 0 0 300px;
+      background: #181818;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: scale(1.05); }
+    .card img, .card video { width: 100%; border-radius: 12px; margin-bottom: 10px; }
+
+    /* Setas */
+    .seta {
+      position: absolute; top: 40%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.6); color: white;
+      border: none; font-size: 2rem;
+      padding: 10px; border-radius: 50%;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .seta:hover { background: #1db954; }
+    .seta.esquerda { left: -10px; }
+    .seta.direita { right: -10px; }
+  </style>
+</head>
+<body>
+  <!-- Tela inicial -->
+  <div id="inicio" class="inicio">
+    <div class="container">
+      <h1>Bem-vindo!</h1>
+      <button class="btn" onclick="abrirMomentos()">Clique Aqui</button>
+    </div>
+  </div>
+
+  <!-- Tela de momentos (escondida até clicar) -->
+  <div id="momentos" class="momentos" style="display:none;">
+    <header class="topo-fixo">
+      <h1>✨ Melhores Momentos</h1>
+      <nav>
+        <a href="#fotos">📸 Fotos</a>
+        <a href="#videos">🎥 Vídeos</a>
+        <a href="#mais">⭐ Mais Momentos</a>
+        <a href="#" onclick="voltarInicio()">🔙 Início</a>
+      </nav>
+    </header>
+
+    <!-- Seção de Fotos -->
+    <section id="fotos">
+      <h2>📸 Fotos</h2>
+      <div class="carrossel-container">
+        <button class="seta esquerda" onclick="rolar('fotosCarrossel', -1)">&#10094;</button>
+        <div class="carrossel" id="fotosCarrossel">
+          <div class="card"><img src="https://picsum.photos/400/250?random=1"><p>Momento especial #1</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=2"><p>Memória inesquecível #2</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=3"><p>Outro clique</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=4"><p>Lembrança #4</p></div>
+        </div>
+        <button class="seta direita" onclick="rolar('fotosCarrossel', 1)">&#10095;</button>
+      </div>
+    </section>
+
+    <!-- Seção de Vídeos -->
+    <section id="videos">
+      <h2>🎥 Vídeos</h2>
+      <div class="carrossel-container">
+        <button class="seta esquerda" onclick="rolar('videosCarrossel', -1)">&#10094;</button>
+        <div class="carrossel" id="videosCarrossel">
+          <div class="card"><video controls><source src="https://www.w3schools.com/html/mov_bbb.mp4"></video><p>Vídeo incrível</p></div>
+          <div class="card"><video controls><source src="https://www.w3schools.com/html/movie.mp4"></video><p>Outro grande momento</p></div>
+          <div class="card"><video controls><source src="https://www.w3schools.com/html/mov_bbb.mp4"></video><p>Diversão total</p></div>
+        </div>
+        <button class="seta direita" onclick="rolar('videosCarrossel', 1)">&#10095;</button>
+      </div>
+    </section>
+
+    <!-- Seção de Mais Momentos -->
+    <section id="mais">
+      <h2>⭐ Mais Momentos</h2>
+      <div class="carrossel-container">
+        <button class="seta esquerda" onclick="rolar('maisCarrossel', -1)">&#10094;</button>
+        <div class="carrossel" id="maisCarrossel">
+          <div class="card"><img src="https://picsum.photos/400/250?random=5"><p>Extra #1</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=6"><p>Extra #2</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=7"><p>Extra #3</p></div>
+          <div class="card"><img src="https://picsum.photos/400/250?random=8"><p>Extra #4</p></div>
+        </div>
+        <button class="seta direita" onclick="rolar('maisCarrossel', 1)">&#10095;</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    function abrirMomentos() {
+      document.getElementById("inicio").style.display = "none";
+      document.getElementById("momentos").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function voltarInicio() {
+      document.getElementById("momentos").style.display = "none";
+      document.getElementById("inicio").style.display = "flex";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function rolar(id, direcao) {
+      const carrossel = document.getElementById(id);
+      const larguraCard = 320;
+      carrossel.scrollBy({ left: direcao * larguraCard, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
