@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafio 1 - Calcular Média</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .enunciado {
+      background: #fff;
+      border-left: 5px solid #4CAF50;
+      padding: 15px;
+      margin-bottom: 20px;
+      max-width: 650px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      font-size: 16px;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px 0 15px 0;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition:  0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    p#resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="enunciado">
+    <h2>Enunciado do Desafio 1</h2>
+    <p>
+      Crie uma função em JavaScript que leia as duas notas digitadas nos campos abaixo, 
+      calcule a média e exiba o resultado dentro do parágrafo ao clicar no botão.
+    </p>
+  </div>
+
+  <h1>Desafio 1 - Calcular Média</h1>
+
+  <label for="nota1">Digite a primeira nota:</label>
+  <input type="number" id="nota1" placeholder="Ex: 7.5" >
+
+  <label for="nota2">Digite a segunda nota:</label>
+  <input type="number" id="nota2" placeholder="Ex: 8.0">
+
+  <button onclick="calcularMedia()">Calcular Média</button>
+
+  <p id="resultado">O resultado aparecerá aqui.</p>
+
+  <script src="desafio1.js"></script>
+</body>
+</html>
