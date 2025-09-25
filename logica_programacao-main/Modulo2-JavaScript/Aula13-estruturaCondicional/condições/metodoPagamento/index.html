@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Pagamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+    <h2>Calculadora de Pagamento</h2>
+        <label>Valor da Compra (R$):</label>
+        <input type="number" id="valorCompra" placeholder="Digite o valor" min="0">
+
+        <label>Forma de Pagamento:</label>
+        <select id="formaPagamento">
+            <option value="pix">Dinheiro/PIX (10% de desconto)</option>
+            <option value="debito">Débito (5% de desconto)</option>
+            <option value="credito">Crédito (sem desconto)</option>
+        </select>
+
+        <button onclick="calcularPagamento()">Calcular</button>
+
+        <p id="resultado"></p>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
