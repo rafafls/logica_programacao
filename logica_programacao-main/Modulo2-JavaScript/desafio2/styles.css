@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  div {
+    margin-bottom: 20px;
+  }
+  
+  input {
+    margin: 0 10px 10px 0;
+  }
+  
+  button {
+    margin-right: 10px;
+    padding: 5px 10px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .aprovado {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .reprovado {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
