@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Formulário de Cadastro</h2>
+        <form>
+            <label for="nome">Nome Completo:</label>
+            <input type="text" id="nome" name="nome" required>
+
+            <label for="data_nascimento">Data de Nascimento:</label>
+            <input type="date" id="data_nascimento" name="data_nascimento" required>
+
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" name="cep" required maxlength="8" onclick="cepUsuario">
+            <p id="erro"></p>
+
+            <label for="rua">Rua:</label>
+            <input type="text" readonly id="rua" name="rua" required>
+
+            <label for="numero">Número:</label>
+            <input type="text" id="numero" name="numero" required>
+
+            <label for="bairro">Bairro:</label>
+            <input type="text" readonly id="bairro" name="bairro" required>
+
+            <label for="cidade">Cidade:</label>
+            <input type="text" readonly id="cidade" name="cidade" required>
+            
+            <label for="estado">Estado:</label>
+            <input type="text" readonly id="estado" name="estado" required>
+
+            <label class="checkbox-label" for="itermos"><input class="checkbox" type="checkbox" name="termos" id="itermos" required>Aceito os termos</label> <br>
+          
+
+            <label class="checkbox-label" for="inovidades"><input type="checkbox" name="novidades" id="inovidades" class="checkbox">Deseja receber e-mail de promoções</label><br>
+
+            <div class="buttons">
+                <button type="submit">Enviar</button>
+                <button type="reset">Resetar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="buscaCEP.js"></script>
+
+</body>
+</html>
