@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interação com Formulários</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="container">
+        <h1>Cadastre-se</h1>
+
+        <form action="processa.php" method="post">
+            <p>
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome">
+            </p>
+
+            <p>
+                <label for="sobreNome">Sobrenome:</label>
+                <input type="text" name="sobreNome" id="sobreNome">
+            </p>
+
+            <p>
+                <label for="email">E-mail:</label>
+                <input type="email" name="email" id="email">
+            </p>
+
+            <p>
+                <label for="senha">Senha:</label>
+                <input type="password" name="senha" id="senha">
+            </p>
+
+            <p>
+                <input type="submit" value="Enviar" id="enviar">
+            </p>
+        </form>
+    </main>
+
+</body>
+</html>
