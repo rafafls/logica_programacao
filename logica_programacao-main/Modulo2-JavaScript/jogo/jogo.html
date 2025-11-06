@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Space Shooter Pixel com Som</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  image-rendering: pixelated;
+  background: radial-gradient(circle at center, #000010, #000020 70%);
+}
+#hud {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-family: monospace;
+  font-size: 18px;
+  z-index: 10;
+}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="hud">
+  <span id="hearts"></span>
+  <span>Pontos: <span id="score">0</span></span>
+</div>
+
+<script>
+// ==== SOM RETRÔ ====
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type="shoot") {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === "shoot") {
+    osc.type = "square";
+    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.15);
+  } 
+  else if (type === "explode") {
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } 
+  else if (type === "heal") {
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.2);
+  }
+}
+
+// ==== CONFIGURAÇÕES ====
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+let keys = {};
+window.addEventListener('keydown', e => keys[e.code] = true);
+window.addEventListener('keyup', e => keys[e.code] = false);
+
+const player = { x: W/2, y: H - 80, w: 32, h: 32, speed: 6, cooldown: 0, lives: 3 };
+let bullets = [];
+let enemies = [];
+let enemyBullets = [];
+let hearts = [];
+let score = 0;
+let spawnTimer = 0;
+let heartTimer = 0;
+
+// ==== DESENHOS PIXEL ====
+function drawPlayer(x, y) {
+  const s = 2;
+  ctx.fillStyle = '#00e0ff';
+  const ship = [
+    "00100",
+    "01110",
+    "11111",
+    "11111",
+    "00100",
+    "01110"
+  ];
+  ship.forEach((row, r) => {
+    [...row].forEach((col, c) => {
+      if (col === "1") ctx.fillRect(x + c*s, y + r*s, s, s);
+    });
+  });
+}
+
+function drawEnemy(x, y) {
+  const s = 2;
+  ctx.fillStyle = '#ff6666';
+  const alien = [
+    "01110",
+    "11111",
+    "10101",
+    "11111",
+    "01010"
+  ];
+  alien.forEach((row, r) => {
+    [...row].forEach((col, c) => {
+      if (col === "1") ctx.fillRect(x + c*s, y + r*s, s, s);
+    });
+  });
+}
+
+function drawHeart(x, y, color="#ff4d6d") {
+  const s = 2;
+  ctx.fillStyle = color;
+  const heart = [
+    "01100110",
+    "11111111",
+    "11111111",
+    "01111110",
+    "00111100",
+    "00011000"
+  ];
+  heart.forEach((row, r) => {
+    [...row].forEach((col, c) => {
+      if (col === "1") ctx.fillRect(x + c*s, y + r*s, s, s);
+    });
+  });
+}
+
+// ==== LÓGICA ====
+function update() {
+  if (keys["ArrowLeft"] || keys["KeyA"]) player.x -= player.speed;
+  if (keys["ArrowRight"] || keys["KeyD"]) player.x += player.speed;
+  player.x = Math.max(0, Math.min(W - player.w, player.x));
+
+  player.cooldown--;
+  if ((keys["Space"] || keys["ArrowUp"]) && player.cooldown <= 0) {
+    bullets.push({x: player.x + player.w/2 - 2, y: player.y - 10, w: 4, h: 10, speed: 8});
+    player.cooldown = 15;
+    playSound("shoot");
+  }
+
+  bullets.forEach(b => b.y -= b.speed);
+  bullets = bullets.filter(b => b.y > -20);
+
+  spawnTimer--;
+  if (spawnTimer <= 0) {
+    enemies.push({x: Math.random() * (W - 40), y: -20, w: 32, h: 20, speed: 2 + Math.random()*1.5});
+    spawnTimer = 60 + Math.random() * 100;
+  }
+
+  enemies.forEach(e => {
+    e.y += e.speed;
+    if (Math.random() < 0.005)
+      enemyBullets.push({x: e.x + e.w/2 - 2, y: e.y + 10, w: 4, h: 10, speed: 5});
+  });
+
+  enemyBullets.forEach(b => b.y += b.speed);
+
+  // colisões
+  bullets.forEach((b, bi) => {
+    enemies.forEach((e, ei) => {
+      if (b.x < e.x+e.w && b.x+b.w > e.x && b.y < e.y+e.h && b.y+b.h > e.y) {
+        enemies.splice(ei, 1);
+        bullets.splice(bi, 1);
+        score += 100;
+        playSound("explode");
+      }
+    });
+  });
+
+  enemies.forEach((e, i) => {
+    if (e.x < player.x+player.w && e.x+e.w > player.x && e.y < player.y+player.h && e.y+e.h > player.y) {
+      enemies.splice(i,1);
+      player.lives--;
+      playSound("explode");
+    }
+    if (e.y > H) enemies.splice(i,1);
+  });
+
+  enemyBullets.forEach((b, i) => {
+    if (b.x < player.x+player.w && b.x+b.w > player.x && b.y < player.y+player.h && b.y+b.h > player.y) {
+      enemyBullets.splice(i, 1);
+      player.lives--;
+      playSound("explode");
+    }
+    if (b.y > H) enemyBullets.splice(i,1);
+  });
+
+  // corações caindo
+  heartTimer--;
+  if (heartTimer <= 0) {
+    hearts.push({x: Math.random() * (W - 20), y: -20, w: 20, h: 20, speed: 2});
+    heartTimer = 800 + Math.random() * 400;
+  }
+
+  hearts.forEach(h => h.y += h.speed);
+
+  hearts.forEach((h, i) => {
+    if (h.x < player.x+player.w && h.x+h.w > player.x && h.y < player.y+player.h && h.y+h.h > player.y) {
+      if (player.lives < 3) player.lives++;
+      playSound("heal");
+      hearts.splice(i,1);
+    }
+    if (h.y > H) hearts.splice(i,1);
+  });
+
+  if (player.lives <= 0) gameOver = true;
+}
+
+// ==== DESENHO ====
+function draw() {
+  ctx.fillStyle = "#000020";
+  ctx.fillRect(0,0,W,H);
+
+  // estrelas
+  ctx.fillStyle = "#ffffff22";
+  for (let i=0; i<100; i++)
+    ctx.fillRect((i*37 + Date.now()/50)%W, (i*53)%H, 2, 2);
+
+  drawPlayer(player.x, player.y);
+  ctx.fillStyle = "#00ffff";
+  bullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+  enemies.forEach(e => drawEnemy(e.x, e.y));
+  ctx.fillStyle = "#ff5555";
+  enemyBullets.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+  hearts.forEach(h => drawHeart(h.x, h.y));
+
+  // HUD
+  const heartsEl = document.getElementById('hearts');
+  heartsEl.innerHTML = '';
+  for (let i=0; i<player.lives; i++) heartsEl.innerHTML += '❤️ ';
+  document.getElementById('score').textContent = score;
+}
+
+// ==== LOOP ====
+let gameOver = false;
+function loop() {
+  if (!gameOver) {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  } else {
+    ctx.fillStyle = "#000000aa";
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "32px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", W/2, H/2 - 20);
+    ctx.font = "18px monospace";
+    ctx.fillText(`Pontuação: ${score}`, W/2, H/2 + 20);
+    ctx.fillText("Recarregue a página para jogar novamente", W/2, H/2 + 50);
+  }
+}
+
+loop();
+</script>
+</body>
+</html>

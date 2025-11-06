@@ -1,0 +1,141 @@
+/* ----- Variáveis e tipografia ----- */
+:root{
+    --bg: #0b1020;
+    --panel-bg: rgba(255,255,255,0.015);
+    --accent: #ffcc00;
+    --danger: #ff4655;
+    --glass: rgba(255,255,255,0.06);
+    --muted: #9fb0d6;
+    --card-radius: 14px;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  }
+  
+  /* Reset/minimal */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg) 0%, #081122 100%);color:#e6eef8}
+  
+  /* ===== Layout externo ===== */
+  .wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:18px;
+  }
+  
+  /* Card principal: subdividido em canvas + painel */
+  .game-card{
+    width:980px;
+    max-width:100%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--card-radius);
+    box-shadow:0 10px 30px rgba(2,6,23,0.6);
+    overflow:hidden;
+    display:grid;
+    grid-template-columns: 1fr 320px;
+  }
+  
+  /* ===== Área do jogo ===== */
+  .game-area{
+    position:relative;
+    background:linear-gradient(180deg,#081422 0%, #061121 100%);
+    min-height:600px;
+    display:flex;
+    align-items:stretch;
+  }
+  
+  /* Canvas ocupa totalmente a área esquerda */
+  canvas{display:block;width:100%;height:100%}
+  
+  /* Footer com instruções (sobre o canvas) */
+  .footer{
+    position:absolute;
+    bottom:10px;
+    left:20px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  
+  /* ===== Touch controls (botões para celular) ===== */
+  .touch-controls{
+    display:none; /* aparece somente em telas pequenas */
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:18px;
+    gap:12px;
+    z-index:40;
+  }
+  .touch-btn{
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    border:0;
+    font-size:28px;
+    font-weight:700;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    color:#d7e6ff;
+    box-shadow:0 8px 18px rgba(2,6,23,0.5);
+    touch-action: manipulation;
+  }
+  
+  /* ===== Painel lateral (informações) ===== */
+  .panel{
+    padding:18px;
+    background:var(--panel-bg);
+    border-left:1px solid rgba(255,255,255,0.02);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  
+  /* Cabeçalho */
+  .panel h1{margin:6px 0 0 0;font-size:18px}
+  
+  /* Estatísticas rápidas (score/best) */
+  .meta{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{background:var(--glass);padding:10px;border-radius:8px;min-width:120px}
+  .label{font-size:12px;color:var(--muted)}
+  .score{font-weight:700;font-size:32px;color:var(--accent)}
+  
+  /* Leaderboard (top 5) */
+  .leaderboard{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px}
+  .lb-title{font-size:13px;color:var(--muted);margin-bottom:6px}
+  .best-list{margin:0;padding-left:18px}
+  .best-list li{font-size:14px;margin:4px 0;color:#dfeeff}
+  
+  /* Controles do painel */
+  .controls{display:flex;gap:8px;margin-top:4px}
+  .control-btn{padding:10px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,#162130,#203044);color:#d7e6ff;font-weight:600;cursor:pointer}
+  .control-btn.important{background:linear-gradient(90deg,#ff8a00,#ff4b4b);color:white}
+  
+  /* Dica / instruções */
+  .hint{font-size:13px;color:var(--muted);margin-top:6px}
+  
+  /* Game over modal */
+  .gameover-screen{
+    position:absolute;
+    top:0;left:0;width:100%;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.75);color:#fff;font-size:22px;
+    opacity:0;pointer-events:none;transition:opacity .28s ease;
+  }
+  .gameover-screen.show{opacity:1;pointer-events:auto}
+  .try-btn{margin-top:12px;padding:10px 16px;border-radius:8px;border:none;background:var(--danger);color:white;font-weight:700}
+  
+  /* ===== Responsividade ===== */
+  @media (max-width:920px){
+    .game-card{grid-template-columns:1fr}
+    .panel{order:2}
+    .touch-controls{display:flex}
+    .game-area{min-height:70vh}
+    .panel{padding:14px}
+    .best-list{padding-left:14px}
+    .touch-btn{width:60px;height:60px;font-size:26px;border-radius:10px}
+  }
+  
+  /* Pequenos ajustes visuais */
+  @media (max-width:420px){
+    .touch-btn{width:54px;height:54px;font-size:22px}
+    .score{font-size:28px}
+  }

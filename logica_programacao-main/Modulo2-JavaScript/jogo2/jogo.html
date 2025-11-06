@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Naruto</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="game-card">
+
+      <!-- ÁREA DO JOGO (canvas) -->
+      <div class="game-area">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+
+        <!-- Mensagem inferior com instruções -->
+        <div class="footer">Use ← → para trocar de trilho. Deslize para cima para pular.</div>
+
+        <!-- Controles táteis (aparecem em dispositivos touch) -->
+        <div id="touchControls" class="touch-controls">
+          <button id="btnLeft" class="touch-btn" aria-label="Ir para a esquerda">◀</button>
+          <button id="btnRight" class="touch-btn" aria-label="Ir para a direita">▶</button>
+        </div>
+
+        <!-- Tela de Game Over -->
+        <div id="gameOver" class="gameover-screen" role="dialog" aria-hidden="true">
+          <div id="gameOverText">GAME OVER</div>
+          <div id="finalScore" class="final-score"></div>
+          <button id="btnTryAgain" class="try-btn">Tentar Novamente</button>
+        </div>
+      </div>
+
+      <!-- PAINEL LATERAL / INFERIOR -->
+      <aside class="panel" role="region" aria-label="Painel de informações">
+        <h1>Naruto 🌀</h1>
+
+        <!-- Placar e melhores -->
+        <div class="meta">
+          <div class="stat">
+            <div class="label">Pontos</div>
+            <div id="score" class="score">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="label">Melhor (Top 1)</div>
+            <div id="best" class="score">0</div>
+          </div>
+        </div>
+
+        <!-- Top 5 melhores pontuações -->
+        <div class="leaderboard">
+          <div class="lb-title">Melhores (Top 5)</div>
+          <ol id="bestList" class="best-list" aria-live="polite"></ol>
+        </div>
+
+        <!-- Controles do jogo (desktop) -->
+        <div class="controls">
+          <button id="btnStart" class="control-btn">Iniciar</button>
+          <button id="btnPause" class="control-btn">Pausar</button>
+          <button id="btnRestart" class="control-btn important">Reiniciar</button>
+        </div>
+
+        <p class="hint">Controles: setas do teclado (esq/dir). No celular use os botões na tela e deslize para cima para pular.</p>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Sprites carregados (hidden) -->
+  <img id="playerSprite" src="img/naruto.png" hidden alt="player">
+  <img id="obstacleSprite" src="img/obstaculo.png" hidden alt="obstacle">
+
+  <!-- Script do jogo -->
+  <script src="game.js"></script>
+</body>
+</html>
